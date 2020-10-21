@@ -43,7 +43,6 @@ func main() {
 				}
 			}
 
-
 			connectionString := "postgres://" + user + ":" + password + "@" + server + "/" + dbname + "?sslmode=" + sslmode
 			var err error
 			DB, err = sql.Open("postgres", connectionString)
@@ -55,18 +54,19 @@ func main() {
 			}
 		}
 
-		tables, err := DB.Query("SELECT * FROM information_schema.tables WHERE table_schema = 'Lab1'")
+		tables, err := DB.Query("SELECT * FROM information_schema.tables")
 		if err != nil {
 			log.Fatalln(err)
 		}
 		for tables.Next() {
-			var t1, t2 string
-			tables.Scan(&t1, &t2)
-			println(t1 + ", " + t2)
+			var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12 sql.NullString
+			err := tables.Scan(&t1, &t2, &t3, &t4, &t5, &t6, &t7, &t8, &t9, &t10, &t11, &t12)
+			println(t1.String + ", " + t2.String + ", " + t3.String + ", " + t4.String + ", " + t5.String + ", " + t6.String + ", " + t7.String + ", " + t8.String + ", " + t9.String + ", " + t10.String + ", " + t11.String + ", " + t12.String)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
-
-
-
+		break
 
 	}
 
