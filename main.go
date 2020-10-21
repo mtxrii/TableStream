@@ -106,19 +106,37 @@ func main() {
 				found = true
 			}
 		}
+		println()
 		if !found {
 			println("- No tables found.")
 			continue
 		}
 
 		// Main program loop
+	out:
 		for {
 			cmd := ""
 			println("What would you like to do now?\n" +
 				" peek <table> - see contents of a table\n" +
-				" newschema - exit schema and enter a new one")
+				" newschema    - exit schema and enter a new one")
 			print("-> ")
 			fmt.Scanf("%s\n", &cmd)
+			parts := strings.Split(cmd, " ")
+
+			switch parts[0] {
+			case "newschema":
+				println()
+				break out
+			case "peek":
+				if len(parts) < 2 {
+					println("\nUsage: peek <table>\n")
+					break
+				} else {
+					print("Tables in: " + parts[1])
+				}
+			default:
+				println("\nUnknown command.\n")
+			}
 		}
 
 	}
