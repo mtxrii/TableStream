@@ -25,7 +25,7 @@ func main() {
 		for !useEnvCredentials || !loggedIn {
 			var useEnvs string
 			print("Would you like to log in using credentials in your auth.env? (Y/N): ")
-			fmt.Scanf("%s\n", &useEnvs)
+			fmt.Scanln(&useEnvs)
 			useEnvs = strings.ToUpper(useEnvs)
 			if useEnvs == "Y" {
 				useEnvCredentials = true
@@ -51,16 +51,16 @@ func main() {
 			if !useEnvCredentials {
 				print("Log in manually...\n" +
 					"Server URL: ")
-				fmt.Scanf("%s\n", &server)
+				fmt.Scanln(&server)
 				print("Username: ")
-				fmt.Scanf("%s\n", &user)
+				fmt.Scanln(&user)
 				print("Password: ")
-				fmt.Scanf("%s\n", &password)
+				fmt.Scanln(&password)
 				print("DB Name: ")
-				fmt.Scanf("%s\n", &dbname)
+				fmt.Scanln(&dbname)
 				for {
 					print("SSL Mode (T/F): ")
-					fmt.Scanf("%s\n", &sslmode)
+					fmt.Scanln(&sslmode)
 					sslmode = strings.ToUpper(sslmode)
 					if sslmode == "T" {
 						sslmode = "require"
@@ -87,7 +87,7 @@ func main() {
 		}
 
 		print("Schema: ")
-		fmt.Scanf("%s\n", &schema)
+		fmt.Scanln(&schema)
 
 		tables, err := DB.Query("SELECT * FROM information_schema.tables WHERE table_schema = '" + schema + "' AND table_type = 'BASE TABLE'")
 		if err != nil {
@@ -120,7 +120,7 @@ func main() {
 				" peek <table> - see contents of a table\n" +
 				" newschema    - exit schema and enter a new one")
 			print("-> ")
-			fmt.Scanf("%s\n", &cmd)
+			fmt.Scanln(&cmd)
 			parts := strings.Split(cmd, " ")
 
 			switch parts[0] {
@@ -138,7 +138,5 @@ func main() {
 				println("\nUnknown command.\n")
 			}
 		}
-
 	}
-
 }
