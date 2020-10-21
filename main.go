@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	println("TableStream - See inside your Postgres tables")
-	println("---------------------------------------------")
+	println("TableStream - See inside your Postgres tables\n+" +
+		"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 
 	loggedIn := false
 	var DB *sql.DB
@@ -42,19 +42,24 @@ func main() {
 					break
 				}
 			}
+			println()
 
 			connectionString := "postgres://" + user + ":" + password + "@" + server + "/" + dbname + "?sslmode=" + sslmode
 			var err error
 			DB, err = sql.Open("postgres", connectionString)
 
 			if err != nil {
-				log.Fatal(err)
+				println(err)
 			} else {
 				loggedIn = true
 			}
 		}
 
-		tables, err := DB.Query("SELECT * FROM information_schema.tables")
+		schema := ""
+		print("Schema: ")
+		fmt.Scanf("%s\n", &schema)
+
+		tables, err := DB.Query("SELECT * FROM information_schema.tables WHERE table_schema = '" + schema + "' AND table_type = 'BASE TABLE'")
 		if err != nil {
 			log.Fatalln(err)
 		}
