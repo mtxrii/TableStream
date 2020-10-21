@@ -3,8 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -13,33 +15,60 @@ func main() {
 		"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 
 	loggedIn := false
+	useEnvCredentials := false
 	var DB *sql.DB
 
 	for {
 		// Log in
-		for !loggedIn {
-			var user, password, server, dbname string
-			print("Log in...\n" +
-				"Server URL: ")
-			fmt.Scanf("%s\n", &server)
-			print("Username: ")
-			fmt.Scanf("%s\n", &user)
-			print("Password: ")
-			fmt.Scanf("%s\n", &password)
-			print("DB Name: ")
-			fmt.Scanf("%s\n", &dbname)
-			sslmode := "none"
-			for {
-				print("SSL Mode (T/F): ")
-				fmt.Scanf("%s\n", &sslmode)
-				sslmode = strings.ToUpper(sslmode)
-				if sslmode == "T" {
-					sslmode = "require"
-					break
+		var user, password, server, dbname, sslmode string
+		for !useEnvCredentials {
+			var useEnvs string
+			print("Would you like to log in using credentials in your auth.env? (Y/N): ")
+			fmt.Scanf("%s\n", &useEnvs)
+			useEnvs = strings.ToUpper(useEnvs)
+			if useEnvs == "Y" {
+				useEnvCredentials = true
+				err := godotenv.Load("./auth.env")
+				if err != nil {
+					useEnvCredentials = false
+					println("Error loading auth.env file")
+				} else {
+					user = os.Getenv("DB_USERNAME")
+					password = os.Getenv("DB_PASSWORD")
+					server = os.Getenv("DB_SERVER")
+					dbname = os.Getenv("DB_NAME")
+					sslmode = os.Getenv("SSLMODE")
 				}
-				if sslmode == "F" {
-					sslmode = "disable"
-					break
+				break
+			}
+			if useEnvs == "N" {
+				useEnvCredentials = false
+				break
+			}
+		}
+		for !loggedIn {
+			if !useEnvCredentials {
+				print("Log in manually...\n" +
+					"Server URL: ")
+				fmt.Scanf("%s\n", &server)
+				print("Username: ")
+				fmt.Scanf("%s\n", &user)
+				print("Password: ")
+				fmt.Scanf("%s\n", &password)
+				print("DB Name: ")
+				fmt.Scanf("%s\n", &dbname)
+				for {
+					print("SSL Mode (T/F): ")
+					fmt.Scanf("%s\n", &sslmode)
+					sslmode = strings.ToUpper(sslmode)
+					if sslmode == "T" {
+						sslmode = "require"
+						break
+					}
+					if sslmode == "F" {
+						sslmode = "disable"
+						break
+					}
 				}
 			}
 			println()
@@ -50,6 +79,7 @@ func main() {
 
 			if err != nil {
 				println(err)
+				useEnvCredentials = false
 			} else {
 				loggedIn = true
 			}
