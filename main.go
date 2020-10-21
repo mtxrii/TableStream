@@ -17,11 +17,12 @@ func main() {
 	loggedIn := false
 	useEnvCredentials := false
 	var DB *sql.DB
+	schema := ""
 
 	for {
 		// Log in
 		var user, password, server, dbname, sslmode string
-		for !useEnvCredentials {
+		for !useEnvCredentials || !loggedIn {
 			var useEnvs string
 			print("Would you like to log in using credentials in your auth.env? (Y/N): ")
 			fmt.Scanf("%s\n", &useEnvs)
@@ -85,7 +86,6 @@ func main() {
 			}
 		}
 
-		schema := ""
 		print("Schema: ")
 		fmt.Scanf("%s\n", &schema)
 
@@ -109,6 +109,16 @@ func main() {
 		if !found {
 			println("- No tables found.")
 			continue
+		}
+
+		// Main program loop
+		for {
+			cmd := ""
+			println("What would you like to do now?\n" +
+				" peek <table> - see contents of a table\n" +
+				" newschema - exit schema and enter a new one")
+			print("-> ")
+			fmt.Scanf("%s\n", &cmd)
 		}
 
 	}
