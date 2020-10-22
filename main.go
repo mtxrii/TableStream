@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	println("TableStream - See inside your Postgres tables\n+" +
+	println("TableStream - See inside your Postgres tables\n" +
 		"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 
 	loggedIn := false
@@ -113,7 +113,7 @@ func main() {
 		}
 
 		// Main program loop
-	out:
+		out:
 		for {
 			cmd := ""
 			println("What would you like to do now?\n" +
@@ -128,12 +128,13 @@ func main() {
 				println()
 				break out
 			case "peek":
-				if len(parts) < 2 {
+				if cap(parts) < 2 {
 					println("\nUsage: peek <table>\n")
-					break
 				} else {
-					print("Tables in: " + parts[1])
+					println("\nTables in: " + parts[1] + "\n")
 				}
+			case "quit", "exit":
+				os.Exit(0)
 			default:
 				println("\nUnknown command.\n")
 			}
